@@ -1,0 +1,21 @@
+name: Costruisci Jarvis PC
+on:
+  push:
+    paths:
+      - 'pc/**'
+      - '.github/workflows/pc.yml'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pyinstaller
+      - run: pyinstaller --onefile --name jarvis-pc pc/jarvis_pc.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jarvis-pc
+          path: dist/jarvis-pc.exe
