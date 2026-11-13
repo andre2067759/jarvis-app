@@ -12,10 +12,15 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file('jarvis.keystore')
-            storePassword 'jarvis123'
-            keyAlias 'jarvis'
-            keyPassword 'jarvis123'
+            def props = new Properties()
+            def f = rootProject.file("signing.properties")
+            if (f.exists()) {
+                f.withInputStream { props.load(it) }
+            }
+            storeFile file(props.getProperty('STORE_FILE', 'jarvis.keystore'))
+            storePassword System.getenv('JARVIS_STORE_PASSWORD') ?: props.getProperty('STORE_PASSWORD', '')
+            keyAlias System.getenv('JARVIS_KEY_ALIAS') ?: props.getProperty('KEY_ALIAS', '')
+            keyPassword System.getenv('JARVIS_KEY_PASSWORD') ?: props.getProperty('KEY_PASSWORD', '')
         }
     }
     buildTypes {
